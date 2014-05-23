@@ -785,12 +785,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WyriHaximus/PhergieDns.git",
-                "reference": "762794ba2de451d598f4d4da91a6f357535479da"
+                "reference": "d1932f77d9551689ddb0bdd92d2f7d8875d3574f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WyriHaximus/PhergieDns/zipball/762794ba2de451d598f4d4da91a6f357535479da",
-                "reference": "762794ba2de451d598f4d4da91a6f357535479da",
+                "url": "https://api.github.com/repos/WyriHaximus/PhergieDns/zipball/d1932f77d9551689ddb0bdd92d2f7d8875d3574f",
+                "reference": "d1932f77d9551689ddb0bdd92d2f7d8875d3574f",
                 "shasum": ""
             },
             "require": {
@@ -823,7 +823,7 @@
                 "plugin",
                 "react"
             ],
-            "time": "2014-05-13 19:32:19"
+            "time": "2014-05-20 20:57:44"
         },
         {
             "name": "wyrihaximus/phergie-http",
@@ -831,12 +831,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WyriHaximus/PhergieHttp.git",
-                "reference": "2b91d738a904392dddd5d0f87e1c6061b56d5eeb"
+                "reference": "022931804a77cd3157821739f6d43cfcfd0d7449"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WyriHaximus/PhergieHttp/zipball/2b91d738a904392dddd5d0f87e1c6061b56d5eeb",
-                "reference": "2b91d738a904392dddd5d0f87e1c6061b56d5eeb",
+                "url": "https://api.github.com/repos/WyriHaximus/PhergieHttp/zipball/022931804a77cd3157821739f6d43cfcfd0d7449",
+                "reference": "022931804a77cd3157821739f6d43cfcfd0d7449",
                 "shasum": ""
             },
             "require": {
@@ -867,7 +867,7 @@
                 "plugin",
                 "react"
             ],
-            "time": "2014-05-13 20:15:07"
+            "time": "2014-05-22 19:26:43"
         },
         {
             "name": "zendframework/zend-escaper",
@@ -1071,12 +1071,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "3b62da716f1d106f6257353f1cbc63e24508b598"
+                "reference": "99a530363b6cf50efc18e1a7cbb12d42b6b22a0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/3b62da716f1d106f6257353f1cbc63e24508b598",
-                "reference": "3b62da716f1d106f6257353f1cbc63e24508b598",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/99a530363b6cf50efc18e1a7cbb12d42b6b22a0b",
+                "reference": "99a530363b6cf50efc18e1a7cbb12d42b6b22a0b",
                 "shasum": ""
             },
             "require": {
@@ -1128,7 +1128,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-05-15 04:11:01"
+            "time": "2014-05-19 02:25:07"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -1718,12 +1718,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "e9525fc511a51e7bfa214c6c420515c580fda35a"
+                "reference": "2158ca824145bd01877f58c987aff828bccddefa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/e9525fc511a51e7bfa214c6c420515c580fda35a",
-                "reference": "e9525fc511a51e7bfa214c6c420515c580fda35a",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/2158ca824145bd01877f58c987aff828bccddefa",
+                "reference": "2158ca824145bd01877f58c987aff828bccddefa",
                 "shasum": ""
             },
             "require": {
@@ -1758,7 +1758,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-18 20:40:13"
+            "time": "2014-05-16 14:25:18"
         }
     ],
     "aliases": [
