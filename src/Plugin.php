@@ -87,7 +87,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
      *
      * Supported keys:
      *
-     * urls - required list of feed URLS to poll for content
+     * urls - required list of feed URLs to poll for content
      *
      * targets - required associative array keyed by connection mask
      * referencing enumerated arrays of channels or users to receive syndicated
@@ -97,7 +97,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
      * between polls of feeds for new content, defaults to 300 (5 minutes)
      *
      * formatter - optional object used to format data from feed items prior to
-     * its syndication
+     * their syndication
      *
      * @param array $config
      * @throws \DomainException if any configuration setting contains an
@@ -150,7 +150,9 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
         $self = $this;
         $this->processed = 0;
         $eventEmitter = $this->getEventEmitter();
+        $logger = $this->getLogger();
         foreach ($this->urls as $url) {
+            $logger->info('Sending request for feed URL', array('url' => $url));
             $request = new HttpRequest(array(
                 'url' => $url,
                 'resolveCallback' => function($data) use ($url, $self) {
@@ -172,6 +174,10 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
      */
     public function processFeed($url, $data)
     {
+        $logger = $this->getLogger();
+        $logger->info('Processing feed', array('url' => $url));
+        $logger->debug('Received feed data', array('data' => $data));
+
         try {
             $new = iterator_to_array(FeedReader::importString($data));
             $old = isset($this->cache[$url]) ? $this->cache[$url] : array();
@@ -181,7 +187,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
             }
             $this->cache[$url] = $new;
         } catch (\Exception $e) {
-            $this->getLogger()->warning(
+            $logger->warning(
                 'Failed to process feed',
                 array(
                     'url' => $url,
