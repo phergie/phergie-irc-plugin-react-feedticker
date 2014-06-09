@@ -209,15 +209,12 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
      */
     protected function getNewFeedItems(array $new, array $old)
     {
-        /*
         return array_map('unserialize',
             array_diff(
                 array_map('serialize', $new),
                 array_map('serialize', $old)
             )
         );
-        */
-        return array_diff($new, $old);
     }
 
     /**
@@ -238,7 +235,10 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
             if (!isset($this->queues[$connection])) {
                 $logger->warning(
                     'Encountered unknown connection',
-                    array('connection' => $connection)
+                    array(
+                        'connection' => $connection,
+                        'queues' => $this->queues,
+                    )
                 );
                 continue;
             }
@@ -311,7 +311,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
         return sprintf('%s!%s@%s',
             $connection->getNickname(),
             $connection->getUsername(),
-            $connection->getHostname()
+            $connection->getServerHostname()
         );
     }
 
