@@ -34,7 +34,7 @@ class DefaultFormatter implements FormatterInterface
      *
      * @var string
      */
-    protected $defaultPattern = '%title% [ %link% ] by %author% at %datemodified%';
+    protected $defaultPattern = '%title% [ %link% ] by %authorname% at %datemodified%';
 
     /**
      * Accepts format pattern.
@@ -54,12 +54,34 @@ class DefaultFormatter implements FormatterInterface
      */
     public function format(EntryInterface $item)
     {
+        $created = $item->getDateCreated();
+        if ($created instanceof \DateTime) {
+            $created = $created->format(\DateTime::ISO8601);
+        }
+
+        $modified = $item->getDateModified();
+        if ($modified instanceof \DateTime) {
+            $modified = $modified->format(\DateTime::ISO8601);
+        }
+
+        $author = $item->getAuthor();
+        if (is_array($author)) {
+            $authorname = $author['name'];
+            $authoremail = $author['email'];
+            $authoruri = $author['uri'];
+        } else {
+            $authorname = '';
+            $authoremail = '';
+            $authoruri = '';
+        }
+
         $replacements = array(
-            '%author%' => $item->getAuthor(),
-            '%authors%' => implode(', ', $item->getAuthors()),
+            '%authorname%' => $authorname,
+            '%authoremail%' => $authoremail,
+            '%authoruri%' => $authoruri,
             '%content%' => $item->getContent(),
-            '%datecreated%' => $item->getDateCreated(),
-            '%datemodified%' => $item->getDateModified(),
+            '%datecreated%' => $created,
+            '%datemodified%' => $modified,
             '%description%' => $item->getDescription(),
             '%id%' => $item->getId(),
             '%link%' => $item->getLink(),

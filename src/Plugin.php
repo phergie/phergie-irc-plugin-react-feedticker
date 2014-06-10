@@ -209,12 +209,27 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
      */
     protected function getNewFeedItems(array $new, array $old)
     {
-        return array_map('unserialize',
-            array_diff(
-                array_map('serialize', $new),
-                array_map('serialize', $old)
-            )
-        );
+        $map = array();
+        $getKey = function($item) {
+            $id = $item->getPermalink();
+            if (!$id) {
+                $id = $item->saveXml();
+            }
+            return $id;
+        };
+        $logger = $this->getLogger();
+        foreach ($new as $item) {
+            $key = $getKey($item);
+            $logger->debug('New: ' . $key);
+            $map[$key] = $item;
+        }
+        foreach ($old as $item) {
+            $key = $getKey($item);
+            $logger->debug('Old: ' . $key);
+            unset($map[$key]);
+        }
+        $logger->debug('Diff: ' . implode(' ', array_keys($map)));
+        return array_values($map);
     }
 
     /**
@@ -233,7 +248,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
 
         foreach ($this->targets as $connection => $targets) {
             if (!isset($this->queues[$connection])) {
-                $logger->warning(
+                $logger->notice(
                     'Encountered unknown connection',
                     array(
                         'connection' => $connection,
