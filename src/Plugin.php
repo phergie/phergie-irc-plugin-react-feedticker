@@ -75,14 +75,6 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
     protected $cache;
 
     /**
-     * Count of feeds processed for the current cycle, used to set up the
-     * callback for the next cycle when all feeds have been processed
-     *
-     * @var int
-     */
-    protected $processed;
-
-    /**
      * Exception code used when the 'urls' configuration setting has an invalid
      * value
      */
@@ -168,25 +160,35 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
     /**
      * Polls feeds for new content to syndicate to channels or users.
      */
-    public function pollFeeds()
+    protected function pollFeeds()
+    {
+        foreach ($this->urls as $url) {
+            $this->pollFeed($url);
+        }
+    }
+
+    /**
+     * Polls an individual feed for new content to syndicate to channels or
+     * users.
+     *
+     * @param string $url Feed URL
+     */
+    public function pollFeed($url)
     {
         $self = $this;
-        $this->processed = 0;
         $eventEmitter = $this->getEventEmitter();
         $logger = $this->getLogger();
-        foreach ($this->urls as $url) {
-            $logger->info('Sending request for feed URL', array('url' => $url));
-            $request = new HttpRequest(array(
-                'url' => $url,
-                'resolveCallback' => function($data) use ($url, $self) {
-                    $self->processFeed($url, $data);
-                },
-                'rejectCallback' => function($error) use ($url, $self) {
-                    $self->processFailure($url, $error);
-                }
-            ));
-            $eventEmitter->emit('http.request', array($request));
-        }
+        $logger->info('Sending request for feed URL', array('url' => $url));
+        $request = new HttpRequest(array(
+            'url' => $url,
+            'resolveCallback' => function($data) use ($url, $self) {
+                $self->processFeed($url, $data);
+            },
+            'rejectCallback' => function($error) use ($url, $self) {
+                $self->processFailure($url, $error);
+            }
+        ));
+        $eventEmitter->emit('http.request', array($request));
     }
 
     /**
@@ -220,7 +222,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
             );
         }
 
-        $this->markFeedProcessed();
+        $this->markFeedProcessed($url);
     }
 
     /**
@@ -306,23 +308,23 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
             )
         );
 
-        $this->markFeedProcessed();
+        $this->markFeedProcessed($url);
     }
 
     /**
-     * Tracks the number of feeds processed in the current cycle and, when all
-     * feeds have been processed, sets up a callback for the next cycle.
+     * Sets up a callback to poll a specified feed.
+     *
+     * @param string $url Feed URL
      */
-    protected function markFeedProcessed()
+    protected function markFeedProcessed($url)
     {
-        $this->processed++;
-
-        if ($this->processed === count($this->urls)) {
-            $this->loop->addTimer(
-                $this->interval,
-                array($this, 'pollFeeds')
-            );
-        }
+        $self = $this;
+        $this->loop->addTimer(
+            $this->interval,
+            function() use ($url) {
+                $self->pollFeed($url);
+            }
+        );
     }
 
     /**
