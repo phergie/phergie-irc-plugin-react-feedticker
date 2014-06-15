@@ -83,6 +83,30 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
     protected $processed;
 
     /**
+     * Exception code used when the 'urls' configuration setting has an invalid
+     * value
+     */
+    const ERR_URLS_INVALID = 1;
+
+    /**
+     * Exception code used when the 'targets' configuration setting has an
+     * invalid value
+     */
+    const ERR_TARGETS_INVALID = 2;
+
+    /**
+     * Exception code used when the 'interval' configuration setting has an
+     * invalid value
+     */
+    const ERR_INTERVAL_INVALID = 3;
+
+    /**
+     * Exception code used when the 'formatter' configuration setting has an
+     * invalid value
+     */
+    const ERR_FORMATTER_INVALID = 4;
+
+    /**
      * Accepts plugin configuration.
      *
      * Supported keys:
@@ -342,7 +366,10 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
         if (!isset($config['urls'])
             || !is_array($config['urls'])
             || array_filter($config['urls'], 'is_string') != $config['urls']) {
-            throw new \DomainException('urls must be a list of strings containing feed URLs');
+            throw new \DomainException(
+                'urls must be a list of strings containing feed URLs',
+                self::ERR_URLS_INVALID
+            );
         }
         return $config['urls'];
     }
@@ -359,7 +386,10 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
         if (!isset($config['targets'])
             || !is_array($config['targets'])
             || array_filter($config['targets'], 'is_array') != $config['targets']) {
-            throw new \DomainException('targets must be an array of arrays');
+            throw new \DomainException(
+                'targets must be an array of arrays',
+                self::ERR_TARGETS_INVALID
+            );
         }
         return $config['targets'];
     }
@@ -375,7 +405,10 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
     {
         if (isset($config['interval'])) {
             if (!is_int($config['interval']) || $config['interval'] <= 0) {
-                throw new \DomainException('interval must reference a positive integer value');
+                throw new \DomainException(
+                    'interval must reference a positive integer value',
+                    self::ERR_INTERVAL_INVALID
+                );
             }
             return $config['interval'];
         }
@@ -393,7 +426,10 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
     {
         if (isset($config['formatter'])) {
             if (!$config['formatter'] instanceof FormatterInterface) {
-                throw new \DomainException('formatter must implement ' . __NAMESPACE__ . '\FormatterInterface');
+                throw new \DomainException(
+                    'formatter must implement ' . __NAMESPACE__ . '\FormatterInterface',
+                    self::ERR_FORMATTER_INVALID
+                );
             }
             return $config['formatter'];
         }
