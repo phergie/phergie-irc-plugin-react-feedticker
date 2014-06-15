@@ -321,7 +321,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
         $self = $this;
         $this->loop->addTimer(
             $this->interval,
-            function() use ($url) {
+            function() use ($url, $self) {
                 $self->pollFeed($url);
             }
         );
