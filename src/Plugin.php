@@ -152,17 +152,16 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
     }
 
     /**
-     * Indicates that the plugin monitors MOTD (message of the day) events,
-     * which it does because they are one-time per-connection events that
-     * enable it to obtain a reference to the event queue for each connection.
+     * Indicates that the plugin monitors USER events because they are one-time
+     * per-connection events that enable it to obtain a reference to the event
+     * queue for each connection.
      *
      * @return array
      */
     public function getSubscribedEvents()
     {
         return array(
-            'irc.received.rpl_endofmotd' => 'getEventQueue',
-            'irc.received.err_nomotd' => 'getEventQueue',
+            'irc.sent.user' => 'getEventQueue',
         );
     }
 
@@ -273,10 +272,10 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
         foreach ($this->targets as $connection => $targets) {
             if (!isset($this->queues[$connection])) {
                 $logger->notice(
-                    'Encountered unknown connection',
+                    'Encountered unknown connection, or USER event not yet received',
                     array(
                         'connection' => $connection,
-                        'queues' => $this->queues,
+                        'connections' => array_keys($this->queues),
                     )
                 );
                 continue;
