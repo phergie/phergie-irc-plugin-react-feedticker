@@ -58,8 +58,8 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
     protected $targets;
 
     /**
-     * Mapping of connection masks to corresponding event queues, used to
-     * syndicate new items to channels or users
+     * Mapping of connection masks to deferreds for corresponding event queues,
+     * used to syndicate new items to channels or users
      *
      * @var array
      */
@@ -153,7 +153,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
     public function getSubscribedEvents()
     {
         return array(
-            'irc.sent.user' => 'getEventQueue',
+            'irc.sent.user' => 'setEventQueue',
         );
     }
 
@@ -272,23 +272,15 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
         }
 
         foreach ($this->targets as $connection => $targets) {
-            if (!isset($this->queues[$connection])) {
-                $logger->notice(
-                    'Encountered unknown connection, or USER event not yet received',
-                    array(
-                        'connection' => $connection,
-                        'connections' => array_keys($this->queues),
-                    )
-                );
-                continue;
-            }
-            $queue = $this->queues[$connection];
-
-            foreach ($targets as $target) {
-                foreach ($messages as $message) {
-                    $queue->ircPrivmsg($target, $message);
+            $this->getEventQueue($connection)->then(
+                function($queue) use ($targets, $messages) {
+                    foreach ($targets as $target) {
+                        foreach ($messages as $message) {
+                            $queue->ircPrivmsg($target, $message);
+                        }
+                    }
                 }
-            }
+            );
         }
     }
 
@@ -328,16 +320,41 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
     }
 
     /**
-     * Stores a reference to the event queue for the connection on which a MOTD
-     * (message of the day) event occurs.
+     * Creates a deferred for the event queue of a given connection.
+     *
+     * @param string $mask Mask for the connection
+     * @return \React\Promise\Deferred
+     */
+    protected function getEventQueueDeferred($mask)
+    {
+        if (!isset($this->queues[$mask])) {
+            $this->queues[$mask] = new Deferred;
+        }
+        return $this->queues[$mask];
+    }
+
+    /**
+     * Stores a reference to the event queue for the connection on which a USER
+     * event occurs.
      *
      * @param \Phergie\Irc\EventInterface $event
      * @param \Phergie\Irc\Bot\React\EventQueueInterface $queue
      */
-    public function getEventQueue(Event $event, Queue $queue)
+    public function setEventQueue(Event $event, Queue $queue)
     {
         $mask = $this->getConnectionMask($event->getConnection());
-        $this->queues[$mask] = $queue;
+        $this->getEventQueueDeferred($mask)->resolve($queue);
+    }
+
+    /**
+     * Returns a promise for the event queue of a given connection.
+     *
+     * @param string $mask Mask for the connection
+     * @param \React\Promise\PromiseInterface
+     */
+    protected function getEventQueue($mask)
+    {
+        return $this->getEventQueueDeferred($mask)->promise();
     }
 
     /**
