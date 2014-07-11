@@ -445,7 +445,8 @@ class PluginTest extends \PHPUnit_Framework_TestCase
     {
         $entry = $feed->createEntry();
         $id = ++$this->id;
-        $time = (new \DateTime('2014-07-09T20:53:59+0000'))->format('U');
+        $datetime = new \DateTime('2014-07-09T20:53:59+0000');
+        $time = $datetime->format('U');
         $entry->setId((string) $id);
         $entry->setTitle('Title ' . $id);
         $entry->setDescription('Description ' . $id);
