@@ -17,6 +17,7 @@ use Phergie\Irc\ConnectionInterface;
 use Phergie\Irc\Client\React\LoopAwareInterface;
 use Phergie\Irc\Event\EventInterface as Event;
 use React\EventLoop\LoopInterface;
+use React\Promise\Deferred;
 use WyriHaximus\Phergie\Plugin\Http\Request as HttpRequest;
 use Zend\Feed\Reader\Reader as FeedReader;
 
@@ -171,6 +172,9 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
      * Polls an individual feed for new content to syndicate to channels or
      * users.
      *
+     * This method is public so that queuePoll() can invoke it as a
+     * callback. It should not be invoked outside of this class.
+     *
      * @param string $url Feed URL
      */
     public function pollFeed($url)
@@ -222,7 +226,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
             );
         }
 
-        $this->markFeedProcessed($url);
+        $this->queuePoll($url);
     }
 
     /**
@@ -236,11 +240,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
     {
         $map = array();
         $getKey = function($item) {
-            $id = $item->getPermalink();
-            if (!$id) {
-                $id = $item->saveXml();
-            }
-            return $id;
+            return $item->getPermalink();
         };
         $logger = $this->getLogger();
         foreach ($new as $item) {
@@ -264,8 +264,6 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
      */
     protected function syndicateFeedItems(array $items)
     {
-        $logger = $this->getLogger();
-
         $messages = array();
         foreach ($items as $item) {
             $messages[] = $this->formatter->format($item);
@@ -300,7 +298,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
             )
         );
 
-        $this->markFeedProcessed($url);
+        $this->queuePoll($url);
     }
 
     /**
@@ -308,7 +306,7 @@ class Plugin extends AbstractPlugin implements LoopAwareInterface
      *
      * @param string $url Feed URL
      */
-    protected function markFeedProcessed($url)
+    protected function queuePoll($url)
     {
         $self = $this;
         $this->loop->addTimer(
