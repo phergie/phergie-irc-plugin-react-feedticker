@@ -44,6 +44,7 @@ new \Phergie\Irc\Plugin\React\FeedTicker\Plugin(array(
             'user2',
             // ...
         ),
+        // ...
     ),
 
     // optional: time in seconds to wait between polls of feeds for new
