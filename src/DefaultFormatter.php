@@ -21,12 +21,19 @@ use Zend\Feed\Reader\Entry\EntryInterface;
  */
 class DefaultFormatter implements FormatterInterface
 {
-    /** 
+    /**
      * Pattern used to format feed items
      *
      * @var string
      */
     protected $pattern;
+
+    /**
+     * Pattern used to format date values within feed items
+     *
+     * @var string
+     */
+    protected $datePattern;
 
     /**
      * Default pattern used to format feed items if none is provided via
@@ -40,10 +47,12 @@ class DefaultFormatter implements FormatterInterface
      * Accepts format pattern.
      *
      * @param string $pattern
+     * @param string $datePattern
      */
-    public function __construct($pattern = null)
+    public function __construct($pattern = null, $datePattern = null)
     {
         $this->pattern = $pattern ? $pattern : $this->defaultPattern;
+        $this->datePattern = $datePattern ? $datePattern : \DateTime::ISO8601;
     }
 
     /**
@@ -56,12 +65,12 @@ class DefaultFormatter implements FormatterInterface
     {
         $created = $item->getDateCreated();
         if ($created instanceof \DateTime) {
-            $created = $created->format(\DateTime::ISO8601);
+            $created = $created->format($this->datePattern);
         }
 
         $modified = $item->getDateModified();
         if ($modified instanceof \DateTime) {
-            $modified = $modified->format(\DateTime::ISO8601);
+            $modified = $modified->format($this->datePattern);
         }
 
         $author = $item->getAuthor();

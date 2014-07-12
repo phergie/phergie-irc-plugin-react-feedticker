@@ -97,6 +97,16 @@ class DefaultFormatterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests format() with a custom date format.
+     */
+    public function testFormatWithCustomDateFormat()
+    {
+        $item = $this->getItem();
+        $formatter = new DefaultFormatter('%datecreated%, %datemodified%', 'Y-m-d H:i:s');
+        $this->assertSame('2014-07-10 19:56:00, 2014-07-10 19:56:01', $formatter->format($item));
+    }
+
+    /**
      * Test format() without author info.
      */
     public function testFormatWithoutAuthorInfo()
