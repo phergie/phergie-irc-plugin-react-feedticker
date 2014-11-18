@@ -22,43 +22,49 @@ See Phergie documentation for more information on
 ## Configuration
 
 ```php
-new \Phergie\Irc\Plugin\React\FeedTicker\Plugin(array(
+return array(
+    'plugins' => array(
+        // dependency
+        new \WyriHaximus\Phergie\Plugin\Http\Plugin,
 
-    // required: list of feed URLs to poll for content
-    'urls' => array(
-        'http://feeds.mashable.com/Mashable',
-        'http://readwrite.com/rss.xml',
-        // ...
+        new \Phergie\Irc\Plugin\React\FeedTicker\Plugin(array(
+
+            // required: list of feed URLs to poll for content
+            'urls' => array(
+                'http://feeds.mashable.com/Mashable',
+                'http://readwrite.com/rss.xml',
+                // ...
+            ),
+        
+            // required: lists of channels or users to receive syndicated feed items
+            //           keyed by associated connection mask
+            'targets' => array(
+                'nick1!user1@host1' => array(
+                    '#channel1',
+                    'user1',
+                    // ...
+                ),
+                'nick2!user2@host2' => array(
+                    '#channel2',
+                    'user2',
+                    // ...
+                ),
+                // ...
+            ),
+        
+            // optional: time in seconds to wait between polls of feeds for new
+            //           content, defaults to 300 (5 minutes)
+            'interval' => 300,
+        
+            // optional: object implementing \Phergie\Irc\Plugin\React\FeedTicker\FormatterInterface
+            //           used to format data from feed items prior to their syndication
+            'formatter' => new DefaultFormatter(
+                '%title% [ %link% ] by %authorname% at %datemodified%',
+                'Y-m-d H:i:s'
+            ),
+        )),
     ),
-
-    // required: lists of channels or users to receive syndicated feed items
-    //           keyed by associated connection mask
-    'targets' => array(
-        'nick1!user1@host1' => array(
-            '#channel1',
-            'user1',
-            // ...
-        ),
-        'nick2!user2@host2' => array(
-            '#channel2',
-            'user2',
-            // ...
-        ),
-        // ...
-    ),
-
-    // optional: time in seconds to wait between polls of feeds for new
-    //           content, defaults to 300 (5 minutes)
-    'interval' => 300,
-
-    // optional: object implementing \Phergie\Irc\Plugin\React\FeedTicker\FormatterInterface
-    //           used to format data from feed items prior to their syndication
-    'formatter' => new DefaultFormatter(
-        '%title% [ %link% ] by %authorname% at %datemodified%',
-        'Y-m-d H:i:s'
-    ),
-
-))
+);
 ```
 
 ## Default Formatter
