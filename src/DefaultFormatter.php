@@ -76,8 +76,8 @@ class DefaultFormatter implements FormatterInterface
         $author = $item->getAuthor();
         if (is_array($author)) {
             $authorname = $author['name'];
-            $authoremail = $author['email'];
-            $authoruri = $author['uri'];
+            $authoremail = isset($author['email']) ? $author['email'] : null;
+            $authoruri = isset($author['uri']) ? $author['uri'] : null;
         } else {
             $authorname = '';
             $authoremail = '';

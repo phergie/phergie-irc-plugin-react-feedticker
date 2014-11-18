@@ -119,6 +119,18 @@ class DefaultFormatterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test format() with limited author info.
+     */
+    public function testFormatWithLimitedAuthorInfo()
+    {
+        $item = $this->getItem();
+        Phake::when($item)->getAuthor()->thenReturn(array('name' => 'Author'));
+
+        $formatter = new DefaultFormatter('%authorname%%authoremail%%authoruri%');
+        $this->assertSame('Author', $formatter->format($item));
+    }
+
+    /**
      * Returns a mock feed item.
      *
      * @return
