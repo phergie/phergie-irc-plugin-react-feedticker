@@ -24,7 +24,8 @@ See Phergie documentation for more information on
 ```php
 return array(
     'plugins' => array(
-        // dependency
+        // dependencies
+        new \WyriHaximus\Phergie\Plugin\Dns\Plugin,
         new \WyriHaximus\Phergie\Plugin\Http\Plugin,
 
         new \Phergie\Irc\Plugin\React\FeedTicker\Plugin(array(
