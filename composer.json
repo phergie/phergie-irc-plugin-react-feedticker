@@ -11,10 +11,10 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "phergie/phergie-irc-bot-react": "dev-master",
-        "wyrihaximus/phergie-http": "dev-master",
-        "zendframework/zend-feed": "2.3.*",
-        "zendframework/zend-servicemanager": "2.3.*"
+        "phergie/phergie-irc-bot-react": "~1",
+        "wyrihaximus/phergie-http": "~2",
+        "zendframework/zend-feed": "~2",
+        "zendframework/zend-servicemanager": "~2"
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.*",
