@@ -11,6 +11,7 @@
     },
     "minimum-stability": "dev",
     "require": {
+        "php": ">=5.6",
         "phergie/phergie-irc-bot-react": "~1",
         "wyrihaximus/phergie-http": "~2",
         "zendframework/zend-feed": "^2",
