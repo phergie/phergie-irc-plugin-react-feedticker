@@ -1,4 +1,5 @@
 {
+    "abandoned": true,
     "name": "phergie/phergie-irc-plugin-react-feedticker",
     "description": "Phergie plugin for syndicating data from feed items to channels or users",
     "keywords": [ "phergie", "irc", "bot", "plugin" ],
